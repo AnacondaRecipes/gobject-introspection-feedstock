@@ -1,8 +1,8 @@
 {% set name = "gobject-introspection" %}
-{% set major = "1.51" %}
-{% set patch = "3" %}
+{% set major = "1.53" %}
+{% set patch = "5" %}
 {% set version = major ~ "." ~ patch %}
-{% set sha256 = "80acbffd89452b8e30f8a50f46d64517a866ca63157bd1fa78bedb69f9de11c3" %}
+{% set sha256 = "b8271d3e3e3044289d06e824605a53b2518593bc2b071db6c90485c837ff437d" %}
 
 package:
   name: {{ name|lower }}
@@ -22,17 +22,26 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - bison
     - cairo 1.14.*
     - flex
     - gettext  # [osx]
-    - glib 2.51.*
-    - libffi 3.2.*
     - pkg-config  # [not win]
     - python
-    - toolchain
+    - pthread-stubs
+    - {{ cdt('libx11-devel') }}
+    - {{ cdt('libxrender-devel') }}
+    - {{ cdt('xorg-x11-proto-devel') }}
+    - {{ cdt('libxau-devel') }}
+    - {{ cdt('libxext-devel') }}
+    - libxcb  # [linux]
+  host:
+    - glib >=2.53.5,<=3.0a0
+    - libffi 3.2.*
+    - python
   run:
-    - glib 2.51.*
+    - glib >=2.53.5,<=3.0a0
     - libffi 3.2.*
     - python
 

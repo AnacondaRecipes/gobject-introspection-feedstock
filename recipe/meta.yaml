@@ -25,6 +25,13 @@ requirements:
     - {{ posix }}patch
     - {{ native }}pkg-config
     - {{ compiler('c') }}
+    - pthread-stubs
+    - {{ cdt('libx11-devel') }}
+    - {{ cdt('libxrender-devel') }}
+    - {{ cdt('xorg-x11-proto-devel') }}
+    - {{ cdt('libxau-devel') }}
+    - {{ cdt('libxext-devel') }}
+    - libxcb  # [linux]
   host:
     - meson
     - cairo

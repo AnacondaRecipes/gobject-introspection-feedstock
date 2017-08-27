@@ -37,9 +37,8 @@ if [ $(uname) = Darwin ] ; then
     LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
 fi
 
-bash -x ./configure "${configure_args[@]}" || { cat config.log ; exit 1 ; }
-# make -j${CPU_COUNT} V=1
-make -j1 V=1
+./configure "${configure_args[@]}" || { cat config.log ; exit 1 ; }
+make -j${CPU_COUNT} ${VERBOSE_AT}
 make install
 
 if [ -z "$OSX_ARCH" ] ; then

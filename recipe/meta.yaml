@@ -54,6 +54,15 @@ about:
   license_family: LGPL
   license_file: COPYING
   summary: 'Middleware for binding GObject-based code to other languages.'
+  description: |
+    GObject introspection is a middleware layer between C libraries (using GObject) 
+    and language bindings. The C library can be scanned at compile time and generate 
+    a metadata file, in addition to the actual native C library. Then at runtime, 
+    language bindings can read this metadata and automatically provide bindings to 
+    call into the C library.
+  doc_url: https://wiki.gnome.org/action/show/Projects/GObjectIntrospection#Documentation
+  dev_url: https://git.gnome.org//browse/gobject-introspection/tree/
+  doc_source_url: https://git.gnome.org/browse/gobject-introspection/tree/docs
 
 extra:
   recipe-maintainers:

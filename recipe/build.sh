@@ -15,7 +15,7 @@ else
 fi
 echo "#!/usr/bin/env bash"                                                                                                                            > ./pkg-config
 echo "export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$(${CC} -print-sysroot)/usr/share/pkgconfig:$(${CC} -print-sysroot)/usr/${SRLIBDIR}/pkgconfig"  >> ./pkg-config
-echo "${PREFIX}/bin/pkg-config --define-prefix \"\$@\""                                                                                              >> ./pkg-config
+echo "${BUILD_PREFIX}/bin/pkg-config --define-prefix \"\$@\""                                                                                        >> ./pkg-config
 chmod +x ./pkg-config
 export PATH=${PWD}:${PATH}
 export PKG_CONFIG=${PWD}/pkg-config

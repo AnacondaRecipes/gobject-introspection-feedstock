@@ -29,16 +29,15 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - bison
-    - cairo 1.14.*
     - flex
-    - gettext  # [osx]
     - pkg-config  # [not win]
-    - python
-    - pthread-stubs
-    - libxcb  # [linux]
   host:
     - glib
     - libffi 3.2.*
+    - cairo 1.14.*
+    - gettext  # [osx]
+    - pthread-stubs
+    - libxcb  # [linux]
     - python
   run:
     - libffi 3.2.*

@@ -1,8 +1,8 @@
 {% set name = "gobject-introspection" %}
-{% set major = "1.55" %}
-{% set patch = "0" %}
+{% set major = "1.56" %}
+{% set patch = "1" %}
 {% set version = major ~ "." ~ patch %}
-{% set sha256 = "888fba5df3ebfa42ea9f24ad98a667fdc151cf37a07349352804028a5ef0948f" %}
+{% set sha256 = "5b2875ccff99ff7baab63a34b67f8c920def240e178ff50add809e267d9ea24b" %}
 
 package:
   name: {{ name|lower }}

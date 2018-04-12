@@ -31,7 +31,7 @@ requirements:
     - flex
     - pkg-config  # [not win]
   host:
-    - glib
+    - glib >=2.56.1
     - libffi 3.2.*
     - cairo 1.14.*
     - gettext  # [osx]

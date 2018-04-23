@@ -1,0 +1,18 @@
+VERBOSE_AT:
+- V=1
+c_compiler:
+- gcc
+cairo:
+- '1.14'
+glib:
+- '2.55'
+libffi:
+- '3.2'
+pin_run_as_build:
+  python:
+    min_pin: x.x
+    max_pin: x.x
+python:
+- '3.6'
+zlib:
+- '1.2'

@@ -30,6 +30,7 @@ requirements:
     - bison
     - flex
     - pkg-config  # [not win]
+    - make        # [unix]
   host:
     - glib >=2.56.1
     - libffi
@@ -42,6 +43,7 @@ requirements:
     - pcre  # [linux or win]
   run:
     - python
+    - pcre  # [linux or win]
 
 test:
   commands:

@@ -28,19 +28,20 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
+    - pkg-config                         # [not win]
+    - make                               # [not win]
     - bison
     - flex
-    - pkg-config  # [not win]
   host:
     - glib >=2.56.1
     - libffi
     - cairo
-    - gettext  # [osx]
+    - gettext        # [osx]
     - pthread-stubs
-    - libxcb  # [linux]
+    - libxcb         # [linux]
     - python
-    - zlib  # [linux or win]
-    - pcre  # [linux or win]
+    - zlib           # [linux or win]
+    - pcre           # [linux or win]
   run:
     - python
 

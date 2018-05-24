@@ -44,11 +44,6 @@ requirements:
   run:
     - python
 
-test:
-  commands:
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
-
 about:
   home: https://wiki.gnome.org/action/show/Projects/GObjectIntrospection
   license: LGPLv2+

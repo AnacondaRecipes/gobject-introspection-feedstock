@@ -29,6 +29,9 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - pkg-config                         # [not win]
+    - libtool                            # [not win]
+    - automake                           # [not win]
+    - autoconf                           # [not win]
     - make                               # [not win]
     - bison
     - flex

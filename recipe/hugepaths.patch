@@ -1,6 +1,7 @@
---- ./Makefile.in.orig	2016-10-06 14:50:05.955243132 +0000
-+++ ./Makefile.in	2016-10-06 14:51:12.729258334 +0000
-@@ -928,7 +928,7 @@
+diff -urN gobject-introspection-1.56.1.orig/Makefile.in gobject-introspection-1.56.1/Makefile.in
+--- gobject-introspection-1.56.1.orig/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/Makefile.in	2018-05-24 17:50:28.000000000 +0100
+@@ -991,7 +991,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -9,7 +10,7 @@
  
  INTROSPECTION_SCANNER_ARGS = \
      --verbose \
-@@ -956,7 +956,7 @@
+@@ -1024,7 +1024,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -18,9 +19,10 @@
  
  INTROSPECTION_DOCTOOL_ARGS = \
      --add-include-path=$(srcdir) \
---- tests/Makefile.in.orig	2016-10-06 15:00:55.895372258 +0000
-+++ tests/Makefile.in	2016-10-06 15:01:17.578376464 +0000
-@@ -618,7 +618,7 @@
+diff -urN gobject-introspection-1.56.1.orig/common.mk gobject-introspection-1.56.1/common.mk
+--- gobject-introspection-1.56.1.orig/common.mk	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/common.mk	2018-05-24 17:45:03.000000000 +0100
+@@ -13,7 +13,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -29,7 +31,7 @@
  
  INTROSPECTION_SCANNER_ARGS = \
      --verbose \
-@@ -646,7 +646,7 @@
+@@ -45,7 +45,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -38,9 +40,52 @@
  
  INTROSPECTION_DOCTOOL_ARGS = \
      --add-include-path=$(srcdir) \
---- tests/scanner/Makefile.in.orig	2016-10-06 15:06:05.398430946 +0000
-+++ tests/scanner/Makefile.in	2016-10-06 15:06:58.893440506 +0000
-@@ -720,7 +720,7 @@
+diff -urN gobject-introspection-1.56.1.orig/tests/Makefile.in gobject-introspection-1.56.1/tests/Makefile.in
+--- gobject-introspection-1.56.1.orig/tests/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/tests/Makefile.in	2018-05-24 17:49:50.000000000 +0100
+@@ -620,7 +620,7 @@
+         PYTHONPATH=$(top_builddir):$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
+-        $(top_builddir)/g-ir-scanner
++        $(PYTHON) $(top_builddir)/g-ir-scanner
+ 
+ INTROSPECTION_SCANNER_ARGS = \
+     --verbose \
+@@ -653,7 +653,7 @@
+         PYTHONPATH=$(top_builddir):$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
+-        $(top_builddir)/g-ir-doc-tool
++        $(PYTHON) $(top_builddir)/g-ir-doc-tool
+ 
+ INTROSPECTION_DOCTOOL_ARGS = \
+     --add-include-path=$(srcdir) \
+diff -urN gobject-introspection-1.56.1.orig/tests/offsets/Makefile.in gobject-introspection-1.56.1/tests/offsets/Makefile.in
+--- gobject-introspection-1.56.1.orig/tests/offsets/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/tests/offsets/Makefile.in	2018-05-24 17:47:11.000000000 +0100
+@@ -621,7 +621,7 @@
+         PYTHONPATH=$(top_builddir):$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
+-        $(top_builddir)/g-ir-scanner
++        $(PYTHON) $(top_builddir)/g-ir-scanner
+ 
+ INTROSPECTION_SCANNER_ARGS = \
+     --verbose \
+@@ -654,7 +654,7 @@
+         PYTHONPATH=$(top_builddir):$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
+         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
+-        $(top_builddir)/g-ir-doc-tool
++        $(PYTHON) $(top_builddir)/g-ir-doc-tool
+ 
+ INTROSPECTION_DOCTOOL_ARGS = \
+     --add-include-path=$(srcdir) \
+diff -urN gobject-introspection-1.56.1.orig/tests/scanner/Makefile.in gobject-introspection-1.56.1/tests/scanner/Makefile.in
+--- gobject-introspection-1.56.1.orig/tests/scanner/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/tests/scanner/Makefile.in	2018-05-24 17:48:38.000000000 +0100
+@@ -722,7 +722,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -49,7 +94,7 @@
  
  INTROSPECTION_SCANNER_ARGS = --verbose -I$(top_srcdir) \
  	--add-include-path=$(srcdir) \
-@@ -746,7 +746,7 @@
+@@ -753,7 +753,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -58,9 +103,10 @@
  
  INTROSPECTION_DOCTOOL_ARGS = \
      --add-include-path=$(srcdir) \
---- tests/scanner/annotationparser/Makefile.in.orig	2016-10-06 15:06:09.883431748 +0000
-+++ tests/scanner/annotationparser/Makefile.in	2016-10-06 15:07:16.782443702 +0000
-@@ -521,7 +521,7 @@
+diff -urN gobject-introspection-1.56.1.orig/tests/scanner/annotationparser/Makefile.in gobject-introspection-1.56.1/tests/scanner/annotationparser/Makefile.in
+--- gobject-introspection-1.56.1.orig/tests/scanner/annotationparser/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/tests/scanner/annotationparser/Makefile.in	2018-05-24 17:49:14.000000000 +0100
+@@ -523,7 +523,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -69,7 +115,7 @@
  
  INTROSPECTION_SCANNER_ARGS = \
      --verbose \
-@@ -549,7 +549,7 @@
+@@ -556,7 +556,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -78,9 +124,10 @@
  
  INTROSPECTION_DOCTOOL_ARGS = \
      --add-include-path=$(srcdir) \
---- tests/warn/Makefile.in.orig	2016-10-06 15:06:16.318432898 +0000
-+++ tests/warn/Makefile.in	2016-10-06 15:07:30.891446224 +0000
-@@ -520,7 +520,7 @@
+diff -urN gobject-introspection-1.56.1.orig/tests/warn/Makefile.in gobject-introspection-1.56.1/tests/warn/Makefile.in
+--- gobject-introspection-1.56.1.orig/tests/warn/Makefile.in	2018-05-24 17:41:04.000000000 +0100
++++ gobject-introspection-1.56.1/tests/warn/Makefile.in	2018-05-24 17:46:02.000000000 +0100
+@@ -522,7 +522,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
@@ -89,27 +136,7 @@
  
  INTROSPECTION_SCANNER_ARGS = \
      --verbose \
-@@ -548,7 +548,7 @@
-         PYTHONPATH=$(top_builddir):$(top_srcdir) \
-         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
-         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
--        $(top_builddir)/g-ir-doc-tool
-+        $(PYTHON) $(top_builddir)/g-ir-doc-tool
- 
- INTROSPECTION_DOCTOOL_ARGS = \
-     --add-include-path=$(srcdir) \
---- tests/offsets/Makefile.in.orig	2016-10-06 15:06:01.111430180 +0000
-+++ tests/offsets/Makefile.in	2016-10-06 15:06:39.637437065 +0000
-@@ -619,7 +619,7 @@
-         PYTHONPATH=$(top_builddir):$(top_srcdir) \
-         UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
-         UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \
--        $(top_builddir)/g-ir-scanner
-+        $(PYTHON) $(top_builddir)/g-ir-scanner
- 
- INTROSPECTION_SCANNER_ARGS = \
-     --verbose \
-@@ -647,7 +647,7 @@
+@@ -555,7 +555,7 @@
          PYTHONPATH=$(top_builddir):$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_SRCDIR=$(top_srcdir) \
          UNINSTALLED_INTROSPECTION_BUILDDIR=$(top_builddir) \

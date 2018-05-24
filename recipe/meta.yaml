@@ -15,6 +15,7 @@ source:
 
 build:
   number: 2
+  detect_binary_files_with_prefix: true
   skip: true  # [py<35]
 
 requirements:

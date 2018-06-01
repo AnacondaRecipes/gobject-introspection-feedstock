@@ -1,24 +1,8 @@
 #! /bin/bash
 
 set -e
-IFS=$' \t\n' # workaround for conda 4.2.13+toolchain bug
 
-# export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig
-
-# TODO :: Fix this in pkg-config directly. It needs to check for CONDA_BUILD_SYSROOT
-#         and prepend these values to PKG_CONFIG_PATH and default to --define-prefix
-#         (the same issue came up in libxcb-feedstock).
-if [[ ${HOST} =~ .*x86_64.* ]]; then
-  SRLIBDIR=lib64
-else
-  SRLIBDIR=lib
-fi
-echo "#!/usr/bin/env bash"                                                                                                                            > ./pkg-config
-echo "export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$(${CC} -print-sysroot)/usr/share/pkgconfig:$(${CC} -print-sysroot)/usr/${SRLIBDIR}/pkgconfig"  >> ./pkg-config
-echo "${BUILD_PREFIX}/bin/pkg-config --define-prefix \"\$@\""                                                                                        >> ./pkg-config
-chmod +x ./pkg-config
-export PATH=${PWD}:${PATH}
-export PKG_CONFIG=${PWD}/pkg-config
+set -x
 
 declare -a configure_args
 
@@ -31,10 +15,6 @@ if [[ ${PY3K} == True ]] || [[ ${PY3K} == 1 ]]; then
   configure_args+=(--with-python=${PYTHON}3)
 else
   configure_args+=(--with-python=${PYTHON})
-fi
-
-if [ $(uname) = Darwin ] ; then
-    LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
 fi
 
 ./configure "${configure_args[@]}" || { cat config.log ; exit 1 ; }
@@ -54,8 +34,8 @@ fi
 
 rm -f $PREFIX/lib/libgirepository-*.a $PREFIX/lib/libgirepository-*.la
 
-sed -i '.bak' 's|g_ir_scanner=${bindir}/g-ir-scanner|g_ir_scanner=python ${bindir}/g-ir-scanner|g' "${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc
-sed -i '.bak' 's|g_ir_scanner=${bindir}/g-ir-scanner|g_ir_scanner=python ${bindir}/g-ir-scanner|g' "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc
+sed -i.bak 's|g_ir_scanner=${bindir}/g-ir-scanner|g_ir_scanner=python ${bindir}/g-ir-scanner|g' "${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc
+sed -i.bak 's|g_ir_scanner=${bindir}/g-ir-scanner|g_ir_scanner=python ${bindir}/g-ir-scanner|g' "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc
 # diff -urN "${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc.bak "${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc
 # diff -urN "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc.bak "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc
-rm ${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc.bak "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc.bak
+rm "${PREFIX}"/lib/pkgconfig/gobject-introspection-1.0.pc.bak "${PREFIX}"/lib/pkgconfig/gobject-introspection-no-export-1.0.pc.bak

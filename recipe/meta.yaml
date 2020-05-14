@@ -16,7 +16,7 @@ source:
     - hugepaths.patch
 
 build:
-  number: 2
+  number: 3
   detect_binary_files_with_prefix: true
   skip: true  # [win]
 
@@ -30,14 +30,14 @@ requirements:
     - {{ cdt('libxext-devel') }}         # [linux]
     - pkg-config                         # [not win]
     - libtool                            # [not win]
-    - automake                           # [not win]
+    - automake =1.15                     # [not win]
     - autoconf                           # [not win]
     - make                               # [not win]
     - bison
     - flex
   host:
-    - glib >=2.56.1
-    - libffi
+    - glib {{ glib }}
+    - libffi {{ libffi }}
     - cairo
     - gettext        # [osx]
     - pthread-stubs

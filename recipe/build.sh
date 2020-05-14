@@ -17,7 +17,13 @@ else
   configure_args+=(--with-python=${PYTHON})
 fi
 
+
+if [[ $target_platform =~ .*linux.* ]]; then
+    export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${PREFIX}/lib"
+fi
+
 ./configure "${configure_args[@]}" || { cat config.log ; exit 1 ; }
+LD_LIBRARY_PATH="${PREFIX}/lib" \
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make install
 

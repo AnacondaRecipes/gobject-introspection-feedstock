@@ -14,14 +14,20 @@ source:
     - test-fix.patch  # [linux]
 
 build:
-  number: 3
+  number: 0
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
+  skip: true  # [win]
+  ignore_run_exports:
+    # this is only needed to run the full test suite.
+    - cairo
 
 requirements:
   build:
+    - python
     - {{ posix }}bison
     - {{ posix }}flex
+    - meson
     - ninja
     - {{ posix }}patch
     - {{ native }}pkg-config
@@ -38,10 +44,10 @@ requirements:
     - glib
     - libffi
     - pthread-stubs
-    - libxcb  # [linux]
+    # - libxcb  # [linux]
     - python
-    - zlib  # [linux or win]
-    - pcre  # [linux or win]
+    # - zlib  # [linux or win]
+    # - pcre  # [linux or win]
   run:
     - libffi
     - python

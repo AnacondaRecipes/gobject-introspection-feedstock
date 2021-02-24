@@ -14,7 +14,7 @@ source:
     - test-fix.patch  # [linux]
 
 build:
-  number: 0
+  number: 1
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
   skip: true  # [win]
@@ -41,7 +41,7 @@ requirements:
     - meson
     - cairo
     - gettext  # [osx]
-    - glib
+    - glib >=2.56.1
     - libffi
     - pthread-stubs
     # - libxcb  # [linux]

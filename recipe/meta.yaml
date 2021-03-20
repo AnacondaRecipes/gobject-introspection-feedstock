@@ -1,5 +1,5 @@
 {% set name = "gobject-introspection" %}
-{% set version = "1.67.1" %}
+{% set version = "1.68.0" %}
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
-  sha256: 9635184d668794609f9fe661c5bde11c106385d26c3babe291c24e3655987e47
+  sha256: d229242481a201b84a0c66716de1752bca41db4133672cfcfb37c93eb6e54a27
   patches:
     - test-fix.patch  # [linux]
 

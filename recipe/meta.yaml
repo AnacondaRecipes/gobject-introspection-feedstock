@@ -17,7 +17,7 @@ build:
   number: 1
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
-  skip: true  # [win]
+  skip: true  # [win and vc<14]
   ignore_run_exports:
     # this is only needed to run the full test suite.
     - cairo
@@ -27,7 +27,8 @@ requirements:
     - python
     - {{ posix }}bison
     - {{ posix }}flex
-    - meson
+    - meson                              # [not win]
+    - meson 0.53.2                       # [win]
     - ninja
     - {{ posix }}patch
     - {{ native }}pkg-config
@@ -38,7 +39,6 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
   host:
-    - meson
     - cairo
     - gettext  # [osx]
     - glib >=2.56.1

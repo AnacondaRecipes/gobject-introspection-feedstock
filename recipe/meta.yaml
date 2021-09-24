@@ -12,16 +12,23 @@ source:
   sha256: d229242481a201b84a0c66716de1752bca41db4133672cfcfb37c93eb6e54a27
   patches:
     - test-fix.patch  # [linux]
+    # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
+    - pkg-config.patch
 
 build:
-  number: 1
+  number: 2
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
   skip: true  # [win and vc<14]
   ignore_run_exports:
     # this is only needed to run the full test suite.
     - cairo
-
+    - gettext  # [osx]
+    - libffi   # [win]
+  missing_dso_whitelist:      # [linux]
+    - $RPATH/libm.so.6        # [linux]
+    - $RPATH/libpthread.so.0  # [linux]
+    - $RPATH/libc.so.6        # [linux]
 requirements:
   build:
     - python
@@ -51,6 +58,7 @@ requirements:
   run:
     - libffi
     - python
+    - gettext  # [osx]
 
 test:
   requires:

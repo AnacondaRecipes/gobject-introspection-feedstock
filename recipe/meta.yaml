@@ -12,9 +12,11 @@ source:
   sha256: d229242481a201b84a0c66716de1752bca41db4133672cfcfb37c93eb6e54a27
   patches:
     - test-fix.patch  # [linux]
+    # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
+    - pkg-config.patch
 
 build:
-  number: 1
+  number: 2
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
   skip: true  # [win and vc<14]

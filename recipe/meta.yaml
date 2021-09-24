@@ -23,7 +23,12 @@ build:
   ignore_run_exports:
     # this is only needed to run the full test suite.
     - cairo
-
+    - gettext  # [osx]
+    - libffi   # [win]
+  missing_dso_whitelist:      # [linux]
+    - $RPATH/libm.so.6        # [linux]
+    - $RPATH/libpthread.so.0  # [linux]
+    - $RPATH/libc.so.6        # [linux]
 requirements:
   build:
     - python
@@ -53,6 +58,7 @@ requirements:
   run:
     - libffi
     - python
+    - gettext  # [osx]
 
 test:
   requires:

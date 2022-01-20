@@ -16,7 +16,7 @@ source:
     - pkg-config.patch
 
 build:
-  number: 2
+  number: 3
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
   skip: true  # [win and vc<14]
@@ -37,7 +37,6 @@ requirements:
     - meson                              # [not win]
     - meson 0.53.2                       # [win]
     - ninja
-    - {{ posix }}patch
     - {{ native }}pkg-config
     - {{ compiler('c') }}
     - {{ cdt('libx11-devel') }}          # [linux]
@@ -45,24 +44,29 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
+    - patch                              # [not win]
+    - m2-patch                           # [win]
+    - git                                # [not win]
+    - m2-git                             # [win]
   host:
     - cairo
     - gettext  # [osx]
     - glib >=2.56.1
-    - libffi
+    - libffi >=3.3
     - pthread-stubs
     # - libxcb  # [linux]
     - python
     # - zlib  # [linux or win]
     # - pcre  # [linux or win]
   run:
-    - libffi
+    - libffi >=3.3
     - python
     - gettext  # [osx]
 
 test:
   requires:
     - pkg-config
+    - conda-build  # [not win]
   commands:
     - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
     - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]

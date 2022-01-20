@@ -47,6 +47,8 @@ requirements:
     - {{ cdt('libxext-devel') }}         # [linux]
     - patch                              # [not win]
     - m2-patch                           # [win]
+    - git                                # [not win]
+    - m2-git                             # [win]
   host:
     - cairo
     - gettext  # [osx]

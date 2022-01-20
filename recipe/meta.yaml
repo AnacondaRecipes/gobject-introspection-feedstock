@@ -16,7 +16,7 @@ source:
     - pkg-config.patch
 
 build:
-  number: 2
+  number: 3
   detect_binary_files_with_prefix: true
   skip: true  # [py<35]
   skip: true  # [win and vc<14]
@@ -37,7 +37,6 @@ requirements:
     - meson                              # [not win]
     - meson 0.53.2                       # [win]
     - ninja
-    - {{ posix }}patch
     - {{ native }}pkg-config
     - {{ compiler('c') }}
     - {{ cdt('libx11-devel') }}          # [linux]

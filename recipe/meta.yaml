@@ -45,6 +45,8 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
+    - patch                              # [not win]
+    - m2-patch                           # [win]
   host:
     - cairo
     - gettext  # [osx]

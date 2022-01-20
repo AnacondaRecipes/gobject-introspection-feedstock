@@ -49,14 +49,14 @@ requirements:
     - cairo
     - gettext  # [osx]
     - glib >=2.56.1
-    - libffi
+    - libffi >={{ libffi }}
     - pthread-stubs
     # - libxcb  # [linux]
     - python
     # - zlib  # [linux or win]
     # - pcre  # [linux or win]
   run:
-    - libffi
+    - libffi >={{ libffi }}
     - python
     - gettext  # [osx]
 

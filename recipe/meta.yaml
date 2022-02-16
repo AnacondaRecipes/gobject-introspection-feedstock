@@ -1,5 +1,5 @@
 {% set name = "gobject-introspection" %}
-{% set version = "1.68.0" %}
+{% set version = "1.71.0" %}
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
-  sha256: d229242481a201b84a0c66716de1752bca41db4133672cfcfb37c93eb6e54a27
+  sha256: 555dc3997c2892228543029f58610b83fc1da733e4e3d18e9363d7b5a81164dd
   patches:
     - test-fix.patch  # [linux]
     # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265

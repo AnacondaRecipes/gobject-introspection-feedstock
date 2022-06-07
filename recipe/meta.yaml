@@ -22,6 +22,7 @@ build:
   ignore_run_exports:
     # this is only needed to run the full test suite.
     - cairo
+    - pixman
     - gettext  # [osx]
     - libffi   # [win]
   missing_dso_whitelist:      # [linux]

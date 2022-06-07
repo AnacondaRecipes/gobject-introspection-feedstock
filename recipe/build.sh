@@ -20,7 +20,7 @@ export PKG_CONFIG=$BUILD_PREFIX/bin/pkg-config
 
 mkdir forgebuild
 cd forgebuild
-meson --buildtype=release --prefix="$PREFIX" --backend=ninja -Dlibdir=lib \
+meson --buildtype=release --prefix="$PREFIX" --wrap-mode=nofallback --backend=ninja -Dlibdir=lib \
       -Dcairo=enabled -Dpython="$PYTHON" ..
 ninja -v
 ninja test

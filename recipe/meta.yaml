@@ -38,7 +38,6 @@ requirements:
     - ninja-base
     - pkg-config
     - {{ compiler('c') }}
-    - vs2017_{{ target_platform }}       # [win]; encounters an error with vs2019 on builder.
     - {{ cdt('libx11-devel') }}          # [linux]
     - {{ cdt('libxrender-devel') }}      # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]

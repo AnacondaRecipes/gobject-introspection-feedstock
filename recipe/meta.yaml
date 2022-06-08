@@ -24,6 +24,7 @@ build:
     - pixman
     - gettext  # [osx]
     - libffi   # [win]
+    - zlib     # [win]
   missing_dso_whitelist:      # [linux]
     - $RPATH/libm.so.6        # [linux]
     - $RPATH/libpthread.so.0  # [linux]
@@ -43,15 +44,15 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ posix }}patch
-    - zlib                               # [win]
   host:
     - pkg-config
     - cairo
-    - gettext  # [osx]
+    - gettext         # [osx]
     - glib >=2.58.0
     - libffi >=3.3
     - pthread-stubs
     - python
+    - zlib            # [win]
   run:
     - libffi >=3.3
     - python

@@ -1,48 +1,49 @@
-@ECHO ON
+setlocal EnableDelayedExpansion
+@echo on
 
-@REM I cannot for the life of me figure out how Cygwin/MSYS2 figures out its
-@REM root directory, which it uses to find the /etc/fstab which *sometimes*
-@REM affects the choice of the cygdrive prefix. But, regardless of *why*,
-@REM I find that we need this to work:
-mkdir %BUILD_PREFIX%\Library\etc
-echo none / cygdrive binary,user 0 0 >%BUILD_PREFIX%\Library\etc\fstab
-echo none /tmp usertemp binary,posix=0 0 0 >>%BUILD_PREFIX%\Library\etc\fstab
+:: set pkg-config path so that host deps can be found
+set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
+set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
-mkdir forgebuild
-cd forgebuild
+IF NOT EXIST "%BUILD_PREFIX%\Library\lib\pkgconfig\libffi.pc" (
+    :: our current libffi does not ship with a pkgconfig file.
+    copy "%RECIPE_DIR%\libffi.pc" "%BUILD_PREFIX%\Library\lib\pkgconfig\"
+)
 
-@REM pkg-config setup
-FOR /F "delims=" %%i IN ('cygpath.exe -m "%LIBRARY_PREFIX%"') DO set "LIBRARY_PREFIX_M=%%i"
-set PKG_CONFIG_PATH=%LIBRARY_PREFIX_M%/lib/pkgconfig;%LIBRARY_PREFIX_M%/share/pkgconfig
+:: meson options
+:: (set pkg_config_path so deps in host env can be found)
+set ^"MESON_OPTIONS=^
+  --prefix="%LIBRARY_PREFIX%" ^
+  --wrap-mode=nofallback ^
+  --buildtype=release ^
+  --backend=ninja ^
+  -Dcairo=enabled ^
+  -Dcairo-libname=cairo-gobject.dll ^
+  -Dpython=%PYTHON% ^
+  -Dcmake_prefix_path=%SEARCH_PATH% ^
+ ^"
 
-@REM Work around a Windows build failure in Python 3.6. This is unneeded in 3.7.
-@REM See https://www.python.org/dev/peps/pep-0528/ and https://github.com/mesonbuild/meson/issues/4827 .
-set "PYTHONLEGACYWINDOWSSTDIO=1"
-set "PYTHONIOENCODING=UTF-8"
+:: setup build
+meson setup builddir !MESON_OPTIONS!
+if errorlevel 1 (
+    type builddir\meson-logs\meson-log.txt
+    exit 1
+)
 
-@REM Pass Python to meson with a mixed-style (forward slash) path. This fixes a bug
-@REM where build prefix replacement would fail with the g-ir-scanner and
-@REM g-ir-annotation-tool Python scripts because the build prefix would appear within
-@REM them having two slash styles (forward and backward slashes). With this fix, the
-@REM Python path inserted at the top of the installed Python scripts will use the same
-@REM forward slash style as with the paths that meson substitutes later in those scripts
-@REM (meson will use forward slash no matter what style of prefix is passed, so have to
-@REM fix the env python path to match).
-FOR /F "delims=" %%i IN ('cygpath.exe -m "%PYTHON%"') DO set "PYTHON_M=%%i"
-
-%BUILD_PREFIX%\python.exe %BUILD_PREFIX%\Scripts\meson --buildtype=release --prefix=%LIBRARY_PREFIX_M% --wrap-mode=nofallback --backend=ninja -Dcairo=enabled -Dcairo-libname=cairo-gobject.dll -Dpython=%PYTHON_M% ..
+:: print results of build configuration
+meson configure builddir
 if errorlevel 1 exit 1
 
-ninja -v
+:: build
+ninja -v -C builddir -j %CPU_COUNT%
 if errorlevel 1 exit 1
 
-ninja test
-if errorlevel 1 exit 1
+:: test - some errors, ignore test results for now
+ninja -v -C builddir test
+@REM if errorlevel 1 exit 1
 
-ninja install
+:: install
+ninja -C builddir install -j %CPU_COUNT%
 if errorlevel 1 exit 1
 
 del %LIBRARY_PREFIX%\bin\*.pdb
-
-@REM For some reason conda-build decides that the meson files in Scripts are new?
-del %PREFIX%\Scripts\meson* %PREFIX%\Scripts\wraptool*

@@ -1,7 +1,6 @@
 {% set name = "gobject-introspection" %}
 {% set version = "1.72.0" %}
 {% set posix = 'm2-' if win else '' %}
-{% set native = 'm2w64-' if win else '' %}
 
 package:
   name: {{ name|lower }}
@@ -36,7 +35,7 @@ requirements:
     - {{ posix }}flex
     - meson >=0.58.2
     - ninja-base
-    - {{ native }}pkg-config
+    - pkg-config
     - {{ compiler('c') }}
     - {{ cdt('libx11-devel') }}          # [linux]
     - {{ cdt('libxrender-devel') }}      # [linux]
@@ -44,7 +43,9 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ posix }}patch
+    - zlib                               # [win]
   host:
+    - pkg-config
     - cairo
     - gettext  # [osx]
     - glib >=2.58.0

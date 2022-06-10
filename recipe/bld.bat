@@ -5,11 +5,6 @@ setlocal EnableDelayedExpansion
 set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
 set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
-IF NOT EXIST "%BUILD_PREFIX%\Library\lib\pkgconfig\libffi.pc" (
-    :: our current libffi does not ship with a pkgconfig file.
-    copy "%RECIPE_DIR%\libffi.pc" "%BUILD_PREFIX%\Library\lib\pkgconfig\"
-)
-
 findstr /m "C:/ci_310/glib_1642686432177/_h_env/Library/lib/z.lib" "%LIBRARY_LIB%\pkgconfig\gio-2.0.pc"
 if %errorlevel%==0 (
     :: our current glib gio-2.0.pc has zlib dependency set as an absolute path. 

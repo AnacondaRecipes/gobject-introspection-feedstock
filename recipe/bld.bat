@@ -20,7 +20,6 @@ set ^"MESON_OPTIONS=^
   --buildtype=release ^
   --backend=ninja ^
   -Dcairo=enabled ^
-  -Dcairo-libname=cairo-gobject.dll ^
   -Dpython=%PYTHON% ^
   -Dcmake_prefix_path=%SEARCH_PATH% ^
  ^"

@@ -15,7 +15,7 @@ source:
     - pkg-config.patch
 
 build:
-  number: 1
+  number: 2
   detect_binary_files_with_prefix: true
   skip: true  # [win and vc<14]
   ignore_run_exports:
@@ -45,6 +45,7 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ posix }}patch
+    - {{ posix }}sed
   host:
     - pkg-config
     - cairo
@@ -61,6 +62,7 @@ requirements:
 
 test:
   requires:
+    - python  # [win]
     - pkg-config
     - conda-build  # [not win]
   commands:
@@ -72,7 +74,8 @@ test:
 
     # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
     - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
-    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
+    - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
+    - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
   downstreams:
     - pygobject
 

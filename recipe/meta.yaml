@@ -28,6 +28,7 @@ build:
     - $RPATH/libm.so.6        # [linux]
     - $RPATH/libpthread.so.0  # [linux]
     - $RPATH/libc.so.6        # [linux]
+
 requirements:
   build:
     - python
@@ -45,6 +46,7 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
     - {{ posix }}patch
+    - {{ posix }}sed
   host:
     - pkg-config
     - python
@@ -57,13 +59,14 @@ requirements:
   run:
     - python
     # through run_exports
-    - libffi >=3.4
+    - libffi >=3.4,<3.5
     - libglib
     # run-dep as a workaround for now; upstream package still imports from distutils
     - setuptools  # [py>311]
 
 test:
   requires:
+    - python  # [win]
     - pkg-config
     - conda-build  # [not win]
   commands:
@@ -75,7 +78,8 @@ test:
 
     # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
     - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
-    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
+    - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
+    - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
   downstreams:
     - pygobject
 

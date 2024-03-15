@@ -13,7 +13,6 @@ set ^"MESON_OPTIONS=^
   --buildtype=release ^
   --backend=ninja ^
   -Dcairo=enabled ^
-  -Dcairo-libname=cairo-gobject.dll ^
   -Dpython=%PYTHON% ^
   -Dcmake_prefix_path=%SEARCH_PATH% ^
  ^"
@@ -40,6 +39,20 @@ if errorlevel 1 exit 1
 :: install
 ninja -C builddir install -j %CPU_COUNT%
 if errorlevel 1 exit 1
+
+:: There is no concept of #-bangs on Windows, so we create a wrapper to do
+:: its purpose.
+
+echo %PYTHON% %LIBRARY_BIN%\\g-ir-scanner %%* >>%LIBRARY_BIN%\g-ir-scanner.bat
+
+type %LIBRARY_BIN%\gi-ir-scanner.bat
+
+:: Now we need to modify the .pc files using the .bat file instead of directly
+:: the Python file.
+sed -i.bak -E "s|g_ir_scanner=(.*)|g_ir_scanner=\1.bat|g" %PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc
+sed -i.bak -E "s|g_ir_scanner=(.*)|g_ir_scanner=\1.bat|g" %PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc
+del "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc.bak"
+del "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc.bak"
 
 :: print pkgconfig file
 type "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc"

@@ -32,9 +32,9 @@ if errorlevel 1 exit 1
 ninja -v -C builddir -j %CPU_COUNT%
 if errorlevel 1 exit 1
 
-:: test - some errors, ignore test results for now
+:: test
 ninja -v -C builddir test
-@REM if errorlevel 1 exit 1
+if errorlevel 1 exit 1
 
 :: install
 ninja -C builddir install -j %CPU_COUNT%

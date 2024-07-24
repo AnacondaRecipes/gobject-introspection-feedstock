@@ -15,6 +15,9 @@ source:
     - pkg-config.patch
     # workaround for conflicting "import ast" - observerd on cpython 3.12 osx-arm64
     - 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
+    # glib's G_ALWAYS_INLINE since 2.74 expands to the GNU C always_inline
+    # or MSVC __forceinline function attribute depending on the compiler.
+    # see https://docs.gtk.org/glib/macros.html and https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/474/diffs?commit_id=f3c17a6bff87b720a8e08e1eef25d2b53e61e0bc
     - handle_visual_studio_forceinline.patch
 
 build:

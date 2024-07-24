@@ -38,6 +38,9 @@ requirements:
     - python
     # run-dep as a workaround for now; upstream package still imports from distutils
     - setuptools  # [py>311]
+    # For doctool on win
+    - mako       # [win]
+    - markdowns  # [win]
     - {{ posix }}bison
     - {{ posix }}flex
     - meson >=0.60.0

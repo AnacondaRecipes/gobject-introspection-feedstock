@@ -35,14 +35,10 @@ build:
 
 requirements:
   build:
-    - python
-    # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools  # [py>311]
-    # For doctool on win
-    - mako       # [win]
-    - markdown  # [win]
     - {{ posix }}bison
     - {{ posix }}flex
+    - {{ posix }}patch
+    - {{ posix }}sed
     - meson >=0.60.0
     - ninja-base
     - pkg-config
@@ -52,11 +48,12 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
-    - {{ posix }}patch
-    - {{ posix }}sed
   host:
     - pkg-config
     - python
+    # For doctool on win
+    - mako       # [win]
+    - markdown   # [win]
     - cairo {{ cairo }}
     - glib {{ glib }}
     - libffi {{ libffi }}

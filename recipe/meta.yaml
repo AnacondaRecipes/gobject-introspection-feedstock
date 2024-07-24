@@ -35,9 +35,9 @@ build:
 
 requirements:
   build:
-    - python  # [not win]
+    - python
     # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools  # [py>311 or not win]
+    - setuptools  # [py>311]
     - {{ posix }}bison
     - {{ posix }}flex
     - {{ posix }}patch

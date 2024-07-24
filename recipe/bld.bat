@@ -5,6 +5,8 @@ setlocal EnableDelayedExpansion
 set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
 set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
+pkg-config --libs cairo
+
 :: meson options
 :: (set pkg_config_path so deps in host env can be found)
 set ^"MESON_OPTIONS=^

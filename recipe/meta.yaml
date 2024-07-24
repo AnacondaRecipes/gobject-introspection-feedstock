@@ -40,7 +40,7 @@ requirements:
     - setuptools  # [py>311]
     # For doctool on win
     - mako       # [win]
-    - markdowns  # [win]
+    - markdown  # [win]
     - {{ posix }}bison
     - {{ posix }}flex
     - meson >=0.60.0

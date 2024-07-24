@@ -15,15 +15,16 @@ source:
     - pkg-config.patch
     # workaround for conflicting "import ast" - observerd on cpython 3.12 osx-arm64
     - 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
+    - handle_visual_studio_forceinline.patch
 
 build:
-  number: 0
+  number: 1
   detect_binary_files_with_prefix: true
   skip: true  # [win and vc<14]
   ignore_run_exports:
-   # cairo (and dep pixman) is only needed to run the full test suite.
-   - cairo
-   - pixman
+    # cairo (and dep pixman) is only needed to run the full test suite.
+    - cairo
+    - pixman
   missing_dso_whitelist:      # [linux]
     - $RPATH/libm.so.6        # [linux]
     - $RPATH/libpthread.so.0  # [linux]
@@ -51,8 +52,8 @@ requirements:
     - pkg-config
     - python
     - cairo {{ cairo }}
-    - glib 2.78
-    - libffi 3.4
+    - glib {{ glib }}
+    - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }} # [win]
     - setuptools
@@ -80,14 +81,12 @@ test:
     - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
     - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
     - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
-  downstreams:
-    - pygobject
 
 about:
   home: https://wiki.gnome.org/action/show/Projects/GObjectIntrospection
   license: LGPL-2.0-or-later
   license_family: LGPL
-  license_file: 
+  license_file:
     - COPYING
     - COPYING.GPL
     - COPYING.LGPL

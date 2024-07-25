@@ -54,9 +54,6 @@ requirements:
   host:
     - pkg-config
     - python
-    # For doctool on win
-    - mako       # [win]
-    - markdown   # [win]
     - cairo {{ cairo }}
     - glib {{ glib }}
     - libffi {{ libffi }}

@@ -13,7 +13,6 @@ set MESON_OPTIONS=^
   --wrap-mode=nofallback ^
   --buildtype=release ^
   --backend=ninja ^
-  -Ddoctool=enabled ^
   -Dcairo=enabled ^
   -Dpython=%PYTHON% ^
   -Dcmake_prefix_path=%SEARCH_PATH%

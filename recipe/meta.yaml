@@ -52,7 +52,7 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
   host:
-    - pkg-config 0.29
+    - pkg-config
     - python
     # For doctool on win
     - mako       # [win]

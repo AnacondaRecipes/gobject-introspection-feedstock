@@ -2,16 +2,14 @@ setlocal EnableDelayedExpansion
 @echo on
 
 @REM :: set pkg-config path so that host deps can be found
-FOR /F "delims=" %%i IN ('cygpath.exe -m "%LIBRARY_PREFIX%"') DO set "LIBRARY_PREFIX_M=%%i"
-set PKG_CONFIG_PATH=%LIBRARY_PREFIX_M%/lib/pkgconfig;%LIBRARY_PREFIX_M%/share/pkgconfig
-
-set SEARCH_PATH="%LIBRARY_PREFIX_M%"
+set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
+set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
 
 :: meson options
 :: (set pkg_config_path so deps in host env can be found)
 set MESON_OPTIONS=^
-  --prefix=%LIBRARY_PREFIX_M% ^
+  --prefix=%LIBRARY_PREFIX% ^
   --wrap-mode=nofallback ^
   --buildtype=release ^
   --backend=ninja ^

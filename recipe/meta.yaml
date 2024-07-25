@@ -52,7 +52,7 @@ requirements:
     - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxext-devel') }}         # [linux]
   host:
-    - pkg-config
+    - pkg-config 0.29
     - python
     # For doctool on win
     - mako       # [win]
@@ -88,6 +88,9 @@ test:
     - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
     - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
 
+    - test -f $PREFIX/lib/libgirepository-1.0${SHLIB_EXT}  # [not win]
+    - if not exist %PREFIX%\Library\bin\girepository-1.0-1.dll exit 1  # [win]
+    - if not exist %PREFIX%\Library\lib\girepository-1.0.lib exit 1  # [win]
 about:
   home: https://wiki.gnome.org/action/show/Projects/GObjectIntrospection
   license: LGPL-2.0-or-later
@@ -103,9 +106,8 @@ about:
     a metadata file, in addition to the actual native C library. Then at runtime,
     language bindings can read this metadata and automatically provide bindings to
     call into the C library.
-  doc_url: https://gi.readthedocs.io/en/latest/
+  doc_url: https://gi.readthedocs.io/
   dev_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main
-  doc_source_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main/docs
 
 extra:
   recipe-maintainers:

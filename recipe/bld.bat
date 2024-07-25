@@ -1,7 +1,7 @@
 setlocal EnableDelayedExpansion
 @echo on
 
-@REM :: set pkg-config path so that host deps can be found
+:: set pkg-config path so that host deps can be found
 set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
 set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 

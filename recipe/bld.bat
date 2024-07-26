@@ -5,17 +5,17 @@ setlocal EnableDelayedExpansion
 set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
 set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
+
 :: meson options
 :: (set pkg_config_path so deps in host env can be found)
-set ^"MESON_OPTIONS=^
-  --prefix="%LIBRARY_PREFIX%" ^
+set MESON_OPTIONS=^
+  --prefix=%LIBRARY_PREFIX% ^
   --wrap-mode=nofallback ^
   --buildtype=release ^
   --backend=ninja ^
   -Dcairo=enabled ^
   -Dpython=%PYTHON% ^
-  -Dcmake_prefix_path=%SEARCH_PATH% ^
- ^"
+  -Dcmake_prefix_path=%SEARCH_PATH%
 
 :: setup build
 meson setup builddir !MESON_OPTIONS!

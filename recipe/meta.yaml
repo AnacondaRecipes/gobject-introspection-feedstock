@@ -44,6 +44,7 @@ requirements:
     - {{ posix }}sed
     - meson >=0.60.0
     - ninja-base
+    - setuptools <74
     - pkg-config
     - {{ compiler('c') }}
     - {{ cdt('libx11-devel') }}          # [linux]

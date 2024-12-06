@@ -59,14 +59,14 @@ requirements:
     - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }} # [win]
-    - setuptools
+    - setuptools <74
   run:
     - python
     # through run_exports
     - libffi
     - libglib
     # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools  # [py>311]
+    - setuptools <74
 
 test:
   requires:

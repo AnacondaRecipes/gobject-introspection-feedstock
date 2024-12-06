@@ -21,7 +21,7 @@ source:
     - handle_visual_studio_forceinline.patch
 
 build:
-  number: 1
+  number: 2
   detect_binary_files_with_prefix: true
   skip: true  # [win and vc<14]
   ignore_run_exports:
@@ -44,6 +44,7 @@ requirements:
     - {{ posix }}sed
     - meson >=0.60.0
     - ninja-base
+    - setuptools <74
     - pkg-config
     - {{ compiler('c') }}
     - {{ cdt('libx11-devel') }}          # [linux]
@@ -59,14 +60,14 @@ requirements:
     - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }} # [win]
-    - setuptools
+    - setuptools <74
   run:
     - python
     # through run_exports
     - libffi
     - libglib
     # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools  # [py>311]
+    - setuptools <74
 
 test:
   requires:

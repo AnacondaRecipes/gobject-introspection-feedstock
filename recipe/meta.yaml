@@ -1,6 +1,6 @@
 {% set name = "gobject-introspection" %}
 {% set version = "1.78.1" %}
-{% set posix = "'m2-' if win else ''" %}
+{% set posix = 'm2-' if win else '' %}
 
 package:
   name: {{ name|lower }}

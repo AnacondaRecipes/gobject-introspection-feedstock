@@ -45,7 +45,13 @@ if errorlevel 1 exit 1
 
 echo %PYTHON% %LIBRARY_BIN%\\g-ir-scanner %%* >>%LIBRARY_BIN%\g-ir-scanner.bat
 
-type %LIBRARY_BIN%\gi-ir-scanner.bat
+:: Fix the typo - should be g-ir-scanner.bat, not gi-ir-scanner.bat
+if exist %LIBRARY_BIN%\g-ir-scanner.bat (
+    type %LIBRARY_BIN%\g-ir-scanner.bat
+) else (
+    echo ERROR: g-ir-scanner.bat was not created successfully
+    exit 1
+)
 
 :: Now we need to modify the .pc files using the .bat file instead of directly
 :: the Python file.

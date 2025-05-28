@@ -1,4 +1,3 @@
 channels:
   - https://staging.continuum.io/prefect/fs/cairo-feedstock/pr9/41e8d4b
   - https://staging.continuum.io/prefect/fs/pango-feedstock/pr3/a966d4a
-  - https://staging.continuum.io/prefect/fs/mesalib-feedstock/pr1/19a927e

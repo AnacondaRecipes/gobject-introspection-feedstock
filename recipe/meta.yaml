@@ -55,7 +55,7 @@ requirements:
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
     - setuptools <74
-    - xorg-xorgproto
+    - xorg-xorgproto   # [linux]
   run:
     - python
     # through run_exports

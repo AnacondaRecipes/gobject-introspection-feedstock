@@ -21,7 +21,7 @@ source:
     - handle_visual_studio_forceinline.patch
 
 build:
-  number: 2
+  number: 3
   detect_binary_files_with_prefix: true
   skip: true  # [win and vc<14]
   ignore_run_exports:
@@ -46,19 +46,15 @@ requirements:
     - ninja-base
     - pkg-config
     - {{ compiler('c') }}
-    - {{ cdt('libx11-devel') }}          # [linux]
-    - {{ cdt('libxrender-devel') }}      # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-    - {{ cdt('libxau-devel') }}          # [linux]
-    - {{ cdt('libxext-devel') }}         # [linux]
   host:
     - pkg-config
     - python
+    # X11/XCB dependencies through cairo.
     - cairo {{ cairo }}
     - glib {{ glib }}
     - libffi {{ libffi }}
     - pthread-stubs 0.3
-    - zlib {{ zlib }} # [win]
+    - zlib {{ zlib }}  # [win]
     - setuptools <74
   run:
     - python
@@ -75,14 +71,12 @@ test:
     - pkg-config
   commands:
     - g-ir-scanner --help  # [not win]
-    - python "%PREFIX%\\Library\\bin\\g-ir-scanner" --help  # [win]
+    - "python \"%PREFIX%\\\\Library\\\\bin\\\\g-ir-scanner\" --help"  # [win]
     - g-ir-compiler --help
-
     # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
     - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
     - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
-    - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
-
+    - "for /f \"tokens=*\" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist \"%%a\" exit 1"  # [win]
     - test -f $PREFIX/lib/libgirepository-1.0${SHLIB_EXT}  # [not win]
     - if not exist %PREFIX%\Library\bin\girepository-1.0-1.dll exit 1  # [win]
     - if not exist %PREFIX%\Library\lib\girepository-1.0.lib exit 1  # [win]

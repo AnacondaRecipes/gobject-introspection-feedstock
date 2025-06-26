@@ -1,5 +1,6 @@
 {% set name = "gobject-introspection" %}
-{% set version = "1.78.1" %}
+# depends on glib >=2.78
+{% set version = "1.84.0" %}
 {% set posix = 'm2-' if win else '' %}
 
 package:
@@ -8,20 +9,16 @@ package:
 
 source:
   url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
-  sha256: bd7babd99af7258e76819e45ba4a6bc399608fe762d83fde3cac033c50841bb4
+  sha256: 945b57da7ec262e5c266b89e091d14be800cc424277d82a02872b7d794a84779
   patches:
-    - test-fix.patch  # [linux]
+    - test-fix-linux.patch  # [linux]
     # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
     - pkg-config.patch
-    # workaround for conflicting "import ast" - observerd on cpython 3.12 osx-arm64
-    - 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
-    # glib's G_ALWAYS_INLINE since 2.74 expands to the GNU C always_inline
-    # or MSVC __forceinline function attribute depending on the compiler.
-    # see https://docs.gtk.org/glib/macros.html and https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/474/diffs?commit_id=f3c17a6bff87b720a8e08e1eef25d2b53e61e0bc
-    - handle_visual_studio_forceinline.patch
+    - python-hashbang.patch
+    #- 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
 
 build:
-  number: 3
+  number: 0
   detect_binary_files_with_prefix: true
   skip: true  # [win and vc<14]
   ignore_run_exports:
@@ -45,6 +42,7 @@ requirements:
     - meson >=0.60.0
     - ninja-base
     - pkg-config
+    - glib {{ glib }}
     - {{ compiler('c') }}
   host:
     - pkg-config
@@ -56,11 +54,13 @@ requirements:
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
     - setuptools <74
+    - packaging
   run:
     - python
     # through run_exports
     - libffi
     - libglib
+    - glib {{ glib }}
     # run-dep as a workaround for now; upstream package still imports from distutils
     # imports distutils.msvccompiler which has been removed on recent setuptools
     - setuptools <74  # [py>311]
@@ -82,7 +82,7 @@ test:
     - if not exist %PREFIX%\Library\lib\girepository-1.0.lib exit 1  # [win]
 
 about:
-  home: https://gi.readthedocs.io/
+  home: https://gi.readthedocs.io
   license: LGPL-2.0-or-later
   license_family: LGPL
   license_file:
@@ -96,7 +96,7 @@ about:
     a metadata file, in addition to the actual native C library. Then at runtime,
     language bindings can read this metadata and automatically provide bindings to
     call into the C library.
-  doc_url: https://gi.readthedocs.io/
+  doc_url: https://gi.readthedocs.io
   dev_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main
 
 extra:

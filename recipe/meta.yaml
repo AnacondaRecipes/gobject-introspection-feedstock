@@ -40,7 +40,6 @@ requirements:
     - meson >=0.60.0
     - ninja-base
     - pkg-config
-    - glib >=2.82,<2.85
   host:
     - python
     # X11/XCB dependencies through cairo.

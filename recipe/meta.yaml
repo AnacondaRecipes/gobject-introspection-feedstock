@@ -1,5 +1,5 @@
 {% set name = "gobject-introspection" %}
-# Depends on glib >=2.82
+# Depends on glib >=2.82,<2.85
 {% set version = "1.84.0" %}
 {% set posix = 'm2-' if win else '' %}
 
@@ -11,11 +11,10 @@ source:
   url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
   sha256: 945b57da7ec262e5c266b89e091d14be800cc424277d82a02872b7d794a84779
   patches:
-    - test-fix-linux.patch  # [linux]
+    - patches/test-fix-linux.patch  # [linux]
     # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
-    - pkg-config.patch
-    - python-hashbang.patch
-    #- 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
+    - patches/pkg-config.patch
+    - patches/python-hashbang.patch
 
 build:
   number: 0
@@ -43,24 +42,22 @@ requirements:
     - meson >=0.60.0
     - ninja-base
     - pkg-config
-    - glib >=2.82
+    - glib >=2.82,<2.85
   host:
-    - pkg-config
     - python
     # X11/XCB dependencies through cairo.
     - cairo {{ cairo }}
-    - glib >=2.82
+    - glib >=2.82,<2.85
     - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
-    - setuptools <74
     - packaging
   run:
     - python
     # through run_exports
     - libffi
-    - libglib >=2.82
-    - glib >=2.82
+    - libglib >=2.82,<2.85
+    - glib >=2.82,<2.85
     # run-dep as a workaround for now; upstream package still imports from distutils
     # imports distutils.msvccompiler which has been removed on recent setuptools
     - setuptools <74
@@ -105,3 +102,7 @@ extra:
     - ocefpaf
     - scopatz
     - tschoonj
+  skip-lints:
+    - cbc_dep_in_run_missing_from_host
+    - missing_imports_or_run_test_py
+    - python_build_tool_in_run

@@ -1,56 +1,73 @@
-@ECHO ON
+setlocal EnableDelayedExpansion
+@echo on
 
-@REM I cannot for the life of me figure out how Cygwin/MSYS2 figures out its
-@REM root directory, which it uses to find the /etc/fstab which *sometimes*
-@REM affects the choice of the cygdrive prefix. But, regardless of *why*,
-@REM I find that we need this to work:
-mkdir %BUILD_PREFIX%\Library\etc
-echo none / cygdrive binary,user 0 0 >%BUILD_PREFIX%\Library\etc\fstab
-echo none /tmp usertemp binary,posix=0 0 0 >>%BUILD_PREFIX%\Library\etc\fstab
+set GI_SCANNER_DISABLE_CACHE=1
+set GI_TYPELIB_PATH=%LIBRARY_PREFIX%\lib\girepository-1.0
 
-mkdir forgebuild
-cd forgebuild
+set CFLAGS=%CFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
+set CXXFLAGS=%CXXFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
 
-@REM pkg-config setup
-FOR /F "delims=" %%i IN ('cygpath.exe -m "%LIBRARY_PREFIX%"') DO set "LIBRARY_PREFIX_M=%%i"
-set PKG_CONFIG_PATH=%LIBRARY_PREFIX_M%/lib/pkgconfig;%LIBRARY_PREFIX_M%/share/pkgconfig
+:: set pkg-config path so that host deps can be found
+set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
+set SEARCH_PATH="%BUILD_PREFIX%\Library\"
 
-@REM Work around a Windows build failure in Python 3.6. This is unneeded in 3.7.
-@REM See https://www.python.org/dev/peps/pep-0528/ and https://github.com/mesonbuild/meson/issues/4827 .
-set "PYTHONLEGACYWINDOWSSTDIO=1"
-set "PYTHONIOENCODING=UTF-8"
-
-@REM Pass Python to meson with a mixed-style (forward slash) path. This fixes a bug
-@REM where build prefix replacement would fail with the g-ir-scanner and
-@REM g-ir-annotation-tool Python scripts because the build prefix would appear within
-@REM them having two slash styles (forward and backward slashes). With this fix, the
-@REM Python path inserted at the top of the installed Python scripts will use the same
-@REM forward slash style as with the paths that meson substitutes later in those scripts
-@REM (meson will use forward slash no matter what style of prefix is passed, so have to
-@REM fix the env python path to match).
-FOR /F "delims=" %%i IN ('cygpath.exe -m "%PYTHON%"') DO set "PYTHON_M=%%i"
-
-%BUILD_PREFIX%\Scripts\meson.exe ^
-  %MESON_ARGS% ^
-  --prefix=%LIBRARY_PREFIX_M% ^
+:: meson options
+:: (set pkg_config_path so deps in host env can be found)
+set MESON_OPTIONS=^
+  --prefix=%LIBRARY_PREFIX% ^
   --wrap-mode=nofallback ^
+  --buildtype=release ^
   --backend=ninja ^
-  -Dcairo=enabled ^
   -Dcairo_libname=cairo-gobject.dll ^
-  -Dpython=%PYTHON_M% ^
-  ..
+  -Dcairo=enabled ^
+  -Dpython=%PYTHON% ^
+  -Dcmake_prefix_path=%SEARCH_PATH%
+
+:: setup build
+meson setup builddir !MESON_OPTIONS!
+if errorlevel 1 (
+    type builddir\meson-logs\meson-log.txt
+    exit 1
+)
+
+:: print results of build configuration
+meson configure builddir
 if errorlevel 1 exit 1
 
-ninja -v
+:: build
+ninja -v -C builddir -j %CPU_COUNT%
 if errorlevel 1 exit 1
 
-ninja test
+:: test
+ninja -v -C builddir test
 if errorlevel 1 exit 1
 
-ninja install
+:: install
+ninja -C builddir install -j %CPU_COUNT%
 if errorlevel 1 exit 1
+
+:: There is no concept of #-bangs on Windows, so we create a wrapper to do
+:: its purpose.
+
+echo %PYTHON% %LIBRARY_BIN%\\g-ir-scanner %%* >>%LIBRARY_BIN%\g-ir-scanner.bat
+
+:: Fix the typo - should be g-ir-scanner.bat, not gi-ir-scanner.bat
+if exist %LIBRARY_BIN%\g-ir-scanner.bat (
+    type %LIBRARY_BIN%\g-ir-scanner.bat
+) else (
+    echo ERROR: g-ir-scanner.bat was not created successfully
+    exit 1
+)
+
+:: Now we need to modify the .pc files using the .bat file instead of directly
+:: the Python file.
+sed -i.bak -E "s|g_ir_scanner=(.*)|g_ir_scanner=\1.bat|g" %PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc
+sed -i.bak -E "s|g_ir_scanner=(.*)|g_ir_scanner=\1.bat|g" %PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc
+del "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc.bak"
+del "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc.bak"
+
+:: print pkgconfig file
+type "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc"
+type "%PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc"
 
 del %LIBRARY_PREFIX%\bin\*.pdb
-
-@REM For some reason conda-build decides that the meson files in Scripts are new?
-del %PREFIX%\Scripts\meson* %PREFIX%\Scripts\wraptool*

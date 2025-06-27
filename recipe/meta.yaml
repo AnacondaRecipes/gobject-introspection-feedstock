@@ -33,8 +33,6 @@ requirements:
   build:
     - python
     - {{ compiler('c') }}
-    # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools <74
     - {{ posix }}bison
     - {{ posix }}flex
     - {{ posix }}patch
@@ -52,6 +50,8 @@ requirements:
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
     - packaging
+    # ../meson.build:29:8: ERROR: $PREFIX/bin/python is missing modules: setuptools
+    - setuptools 72.1.0
   run:
     - python
     # through run_exports

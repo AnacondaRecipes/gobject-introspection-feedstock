@@ -1,5 +1,5 @@
 {% set name = "gobject-introspection" %}
-# depends on glib >=2.78
+# Depends on glib >=2.82
 {% set version = "1.84.0" %}
 {% set posix = 'm2-' if win else '' %}
 
@@ -33,8 +33,9 @@ build:
 requirements:
   build:
     - python
+    - {{ compiler('c') }}
     # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools <74  # [py>311]
+    - setuptools <74
     - {{ posix }}bison
     - {{ posix }}flex
     - {{ posix }}patch
@@ -42,14 +43,13 @@ requirements:
     - meson >=0.60.0
     - ninja-base
     - pkg-config
-    - glib {{ glib }}
-    - {{ compiler('c') }}
+    - glib >=2.82
   host:
     - pkg-config
     - python
     # X11/XCB dependencies through cairo.
     - cairo {{ cairo }}
-    - glib {{ glib }}
+    - glib >=2.82
     - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
@@ -59,11 +59,11 @@ requirements:
     - python
     # through run_exports
     - libffi
-    - libglib
-    - glib {{ glib }}
+    - libglib >=2.82
+    - glib >=2.82
     # run-dep as a workaround for now; upstream package still imports from distutils
     # imports distutils.msvccompiler which has been removed on recent setuptools
-    - setuptools <74  # [py>311]
+    - setuptools <74
 
 test:
   requires:

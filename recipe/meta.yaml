@@ -1,5 +1,5 @@
 {% set name = "gobject-introspection" %}
-# Depends on glib >=2.82,<2.85
+{% set glib_compatible_pin = ">=2.82.0,<2.85.0" %}
 {% set version = "1.84.0" %}
 {% set posix = 'm2-' if win else '' %}
 
@@ -31,7 +31,7 @@ requirements:
   build:
     - python
     # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools <74
+    - setuptools <74  # [py>=312]
     - {{ compiler('c') }}
     - {{ posix }}bison
     - {{ posix }}flex
@@ -44,22 +44,21 @@ requirements:
     - python
     # X11/XCB dependencies through cairo.
     - cairo {{ cairo }}
-    - glib >=2.82,<2.85
+    - glib {{ glib_compatible_pin }}
     - libffi {{ libffi }}
     - pthread-stubs 0.3
     - zlib {{ zlib }}  # [win]
     - packaging
     # ../meson.build:29:8: ERROR: $PREFIX/bin/python is missing modules: setuptools
-    - setuptools 72.1.0
+    - setuptools <74  # [py>=312]
   run:
     - python
     # through run_exports
     - libffi
-    - libglib >=2.82,<2.85
-    - glib >=2.82,<2.85
+    - glib {{ glib_compatible_pin }}
     # run-dep as a workaround for now; upstream package still imports from distutils
     # imports distutils.msvccompiler which has been removed on recent setuptools
-    - setuptools <74
+    - setuptools <74  # [py>=312]
 
 test:
   requires:

@@ -2,12 +2,7 @@
 
 set -ex
 
-# ppc64le cdt need to be rebuilt with files in powerpc64le-conda-linux-gnu instead of powerpc64le-conda_cos7-linux-gnu. In the meantime:
-if [ "$(uname -m)" = "ppc64le" ]; then
-  cp --force --archive --update --link $BUILD_PREFIX/powerpc64le-conda_cos7-linux-gnu/. $BUILD_PREFIX/powerpc64le-conda-linux-gnu
-fi
-
-if [ $(uname) = Darwin ] ; then
+if [[ "$target_platform" == osx-* ]] ; then
     # dead_strip_dylibs breaks some tests
     LDFLAGS=${LDFLAGS//-Wl,-dead_strip_dylibs/}
 fi

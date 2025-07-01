@@ -1,10 +1,15 @@
 setlocal EnableDelayedExpansion
 @echo on
 
+set GI_SCANNER_DISABLE_CACHE=1
+set GI_TYPELIB_PATH=%LIBRARY_PREFIX%\lib\girepository-1.0
+
+set CFLAGS=%CFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
+set CXXFLAGS=%CXXFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
+
 :: set pkg-config path so that host deps can be found
 set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
 set SEARCH_PATH="%BUILD_PREFIX%\Library\"
-
 
 :: meson options
 :: (set pkg_config_path so deps in host env can be found)
@@ -13,6 +18,7 @@ set MESON_OPTIONS=^
   --wrap-mode=nofallback ^
   --buildtype=release ^
   --backend=ninja ^
+  -Dcairo_libname=cairo-gobject.dll ^
   -Dcairo=enabled ^
   -Dpython=%PYTHON% ^
   -Dcmake_prefix_path=%SEARCH_PATH%

@@ -239,11 +239,6 @@ outputs:
         - test -f $PREFIX/share/gir-1.0/GIRepository-2.0.gir  # [unix]
         - if not exist %PREFIX%\Library\share\gir-1.0\GIRepository-2.0.gir exit 1  # [win]
 
-      downstreams:
-        - gdk-pixbuf
-        - atk-1.0
-        - at-spi2-core
-
 about:
   home: https://gi.readthedocs.io
   license: LGPL-2.0-or-later

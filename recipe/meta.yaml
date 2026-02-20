@@ -1,106 +1,264 @@
+{% set local_glib_pin = ">=2.82" %}
 {% set name = "gobject-introspection" %}
-{% set glib_compatible_pin = ">=2.82.0,<2.85.0" %}
-{% set version = "1.84.0" %}
+{% set version = "1.86.0" %}
 {% set posix = 'm2-' if win else '' %}
+{% set prefix = 'Library/' if win else '' %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name|lower }}-split
   version: {{ version }}
 
 source:
   url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
-  sha256: 945b57da7ec262e5c266b89e091d14be800cc424277d82a02872b7d794a84779
+  sha256: 920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae
   patches:
+    - patches/cross-compile.patch
     - patches/test-fix-linux.patch  # [linux]
     # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
     - patches/pkg-config.patch
     - patches/python-hashbang.patch
+    - patches/setuptools-compat.patch
 
 build:
   number: 0
-  ignore_run_exports:
-    # cairo (and dep pixman) is only needed to run the full test suite.
-    - cairo
-    - pixman
-  missing_dso_whitelist:      # [linux]
-    - $RPATH/libm.so.6        # [linux]
-    - $RPATH/libpthread.so.0  # [linux]
-    - $RPATH/libc.so.6        # [linux]
 
 requirements:
   build:
     - python
-    # run-dep as a workaround for now; upstream package still imports from distutils
-    - setuptools <74  # [py>=312]
-    - {{ compiler('c') }}
     - {{ posix }}bison
     - {{ posix }}flex
-    - {{ posix }}patch
-    - {{ posix }}sed
-    - meson >=0.60.0
-    - ninja-base
+    - meson >=1.4.0
+    - ninja
     - pkg-config
-  host:
-    - python
-    # X11/XCB dependencies through cairo.
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+    # This dep is intentionally written twice; the second time allows
+    # conda-build to add a global pin if needed.
+    - expat {{ expat }}
+    - glib {{ local_glib_pin }}
+    - glib {{ glib }}
     - cairo {{ cairo }}
-    - glib {{ glib_compatible_pin }}
     - libffi {{ libffi }}
-    - pthread-stubs 0.3
-    - zlib {{ zlib }}  # [win]
+    - setuptools  # [py>311]
+    - xorg-xorgproto
+    - zlib {{ zlib }}
+  host:
+    - cairo {{ cairo }}
+    - expat {{ expat }}
+    # Intentional double-listing for conda-build global pinning:
+    - glib {{ local_glib_pin }}
+    - glib {{ glib }}
+    - libffi {{ libffi }}
     - packaging
-    # ../meson.build:29:8: ERROR: $PREFIX/bin/python is missing modules: setuptools
-    - setuptools <74  # [py>=312]
-  run:
     - python
-    # through run_exports
-    - libffi
-    - glib {{ glib_compatible_pin }}
-    # run-dep as a workaround for now; upstream package still imports from distutils
-    # imports distutils.msvccompiler which has been removed on recent setuptools
-    - setuptools <74  # [py>=312]
+    - setuptools  # [py>311]
+    - xorg-xorgproto
+    - zlib {{ zlib }}
 
-test:
-  requires:
-    - python  # [win]
-    - pkg-config
-  commands:
-    - g-ir-scanner --help  # [not win]
-    - "python \"%PREFIX%\\\\Library\\\\bin\\\\g-ir-scanner\" --help"  # [win]
-    - g-ir-compiler --help
-    # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
-    - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
-    - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
-    - "for /f \"tokens=*\" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist \"%%a\" exit 1"  # [win]
-    - test -f $PREFIX/lib/libgirepository-1.0${SHLIB_EXT}  # [not win]
-    - if not exist %PREFIX%\Library\bin\girepository-1.0-1.dll exit 1  # [win]
-    - if not exist %PREFIX%\Library\lib\girepository-1.0.lib exit 1  # [win]
+outputs:
+  - name: libgirepository
+    files:
+      # Unfortunately, we need to manually list all of the typelibs installed
+      # here by g-i, because the glib packages put some files into the
+      # `girepository-1.0` directory and conda-build apparently isn't clever
+      # enough to exclude them if we do a wildcard here.
+      - {{ prefix }}lib/girepository-1.0/DBus-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/DBusGLib-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/GIRepository-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/GL-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/Vulkan-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/cairo-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/fontconfig-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/freetype2-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/libxml2-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/win32-1.0.typelib
+      - {{ prefix }}lib/girepository-1.0/xfixes-4.0.typelib
+      - {{ prefix }}lib/girepository-1.0/xft-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/xlib-2.0.typelib
+      - {{ prefix }}lib/girepository-1.0/xrandr-1.3.typelib
+      - {{ prefix }}lib/libgirepository-1.0*  # [not win]
+      - {{ prefix }}bin/girepository-1.0*.dll  # [win]
+      - {{ prefix }}lib/girepository-1.0.lib  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+      host:
+        - cairo {{ cairo }}
+        # Intentional double-listing for conda-build global pinning:
+        - glib {{ local_glib_pin }}
+        - glib {{ glib }}
+        - libffi {{ libffi }}
+      run:
+        - libffi
+    test:
+      requires:
+        - pkg-config
+      commands:
+        # shared library presence
+        - test -f $PREFIX/lib/libgirepository-1.0${SHLIB_EXT}  # [not win]
+        - if not exist %PREFIX%\Library\bin\girepository-1.0-1.dll exit 1  # [win]
+        - if not exist %PREFIX%\Library\lib\girepository-1.0.lib exit 1  # [win]
+
+        # typelibs directory exists
+        - test -d $PREFIX/lib/girepository-1.0  # [not win]
+        - if not exist %PREFIX%\Library\lib\girepository-1.0 exit 1  # [win]
+
+        # at least one key typelib exists (GIRepository is the most relevant)
+        - test -f $PREFIX/lib/girepository-1.0/GIRepository-2.0.typelib  # [not win]
+        - if not exist %PREFIX%\Library\lib\girepository-1.0\GIRepository-2.0.typelib exit 1  # [win]
+
+        # optional: if a .pc file is present in this output on unix, make sure pkg-config can see it
+        - pkg-config --exists girepository-2.0  # [unix]
+        - pkg-config --modversion girepository-2.0  # [unix]
+
+  - name: g-ir-build-tools
+    files:
+      - {{ prefix }}bin/g-ir-annotation-tool
+      - {{ prefix }}bin/g-ir-scanner
+      - {{ prefix }}lib/gobject-introspection
+      - {{ prefix }}share/gobject-introspection-1.0/*
+      - {{ prefix }}share/man/man1/g-ir-scanner.1
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+        # conda-build needs native python to make .pyc files
+        - python
+      host:
+        # Intentional double-listing for conda-build global pinning:
+        - glib {{ local_glib_pin }}
+        - glib {{ glib }}
+        - python
+        - setuptools  # [py>311]
+      run:
+        - pkg-config
+        - python
+        # run-dep as a workaround for now; upstream package still imports from distutils
+        - setuptools  # [py>311]
+    test:
+      commands:
+        # basic execution
+        - g-ir-scanner --help  # [not win]
+        - g-ir-scanner --version  # [not win]
+        - g-ir-annotation-tool --help  # [not win]
+
+        # on win the entrypoint is the python wrapper shipped as a script
+        - python "%PREFIX%\\Library\\bin\\g-ir-scanner" --help  # [win]
+        - python "%PREFIX%\\Library\\bin\\g-ir-scanner" --version  # [win]
+
+  - name: g-ir-host-tools
+    files:
+      - {{ prefix }}bin/g-ir-compiler*
+      - {{ prefix }}bin/g-ir-generate*
+      - {{ prefix }}bin/g-ir-inspect*
+      - {{ prefix }}share/man/man1/g-ir-compiler.1
+      - {{ prefix }}share/man/man1/g-ir-generate.1
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+      host:
+        # Intentional double-listing for conda-build global pinning:
+        - glib {{ local_glib_pin }}
+        - glib {{ glib }}
+        - libffi {{ libffi }}
+        - {{ pin_subpackage('libgirepository', exact=True) }}
+      run:
+        - {{ pin_subpackage('libgirepository', exact=True) }}
+    test:
+      commands:
+        - g-ir-compiler --help
+        - g-ir-generate --help
+        - g-ir-inspect --help
+
+  - name: gobject-introspection
+    files:
+      - {{ prefix }}include/gobject-introspection-1.0
+      - {{ prefix }}lib/pkgconfig/gobject-introspection*.pc
+      - {{ prefix }}libexec/gi-cross-launcher-load.sh  # [not win]
+      - {{ prefix }}libexec/gi-cross-launcher-save.sh  # [not win]
+      - {{ prefix }}share/aclocal/introspection.m4
+      # See remark above about a similar big batch of files:
+      - {{ prefix }}share/gir-1.0/DBus-1.0.gir
+      - {{ prefix }}share/gir-1.0/DBusGLib-1.0.gir
+      - {{ prefix }}share/gir-1.0/GIRepository-2.0.gir
+      - {{ prefix }}share/gir-1.0/GL-1.0.gir
+      - {{ prefix }}share/gir-1.0/Vulkan-1.0.gir
+      - {{ prefix }}share/gir-1.0/cairo-1.0.gir
+      - {{ prefix }}share/gir-1.0/fontconfig-2.0.gir
+      - {{ prefix }}share/gir-1.0/freetype2-2.0.gir
+      - {{ prefix }}share/gir-1.0/gir-1.2.rnc
+      - {{ prefix }}share/gir-1.0/libxml2-2.0.gir
+      - {{ prefix }}share/gir-1.0/win32-1.0.gir
+      - {{ prefix }}share/gir-1.0/xfixes-4.0.gir
+      - {{ prefix }}share/gir-1.0/xft-2.0.gir
+      - {{ prefix }}share/gir-1.0/xlib-2.0.gir
+      - {{ prefix }}share/gir-1.0/xrandr-1.3.gir
+      - {{ prefix }}share/gobject-introspection-1.0/tests
+    requirements:
+      # include build and host requirements to get proper build string
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+      host:
+        - cairo {{ cairo }}
+        # Intentional double-listing for conda-build global pinning:
+        - glib {{ local_glib_pin }}
+        - glib {{ glib }}
+        - libffi {{ libffi }}
+        - python
+        - setuptools  # [py>311]
+      run:
+        - {{ pin_subpackage('g-ir-build-tools', exact=True) }}
+        - {{ pin_subpackage('g-ir-host-tools', exact=True) }}
+        - {{ pin_subpackage('libgirepository', exact=True) }}
+        - libffi
+        - python
+    test:
+      requires:
+        - pkg-config
+      commands:
+        # pkg-config presence & version
+        - pkg-config --exists gobject-introspection-1.0
+        - pkg-config --modversion gobject-introspection-1.0
+
+        # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
+        - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
+        - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
+
+        # also expose compiler path via pkg-config (downstream sometimes uses this)
+        - test -f `pkg-config --variable=g_ir_compiler --dont-define-prefix gobject-introspection-1.0`  # [unix]
+        - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=g_ir_compiler --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
+
+        # key installed metadata for autotools users
+        - test -f $PREFIX/share/aclocal/introspection.m4  # [unix]
+        - if not exist %PREFIX%\Library\share\aclocal\introspection.m4 exit 1  # [win]
+
+        # key GIR file (downstream expects it to exist)
+        - test -f $PREFIX/share/gir-1.0/GIRepository-2.0.gir  # [unix]
+        - if not exist %PREFIX%\Library\share\gir-1.0\GIRepository-2.0.gir exit 1  # [win]
 
 about:
   home: https://gi.readthedocs.io
   license: LGPL-2.0-or-later
   license_family: LGPL
-  license_file:
-    - COPYING
-    - COPYING.GPL
-    - COPYING.LGPL
+  license_file: COPYING
   summary: Middleware for binding GObject-based code to other languages.
   description: |
-    GObject introspection is a middleware layer between C libraries (using GObject)
-    and language bindings. The C library can be scanned at compile time and generate
-    a metadata file, in addition to the actual native C library. Then at runtime,
-    language bindings can read this metadata and automatically provide bindings to
-    call into the C library.
-  doc_url: https://gi.readthedocs.io
-  dev_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main
+    GObject introspection is a middleware layer between C libraries (using GObject) 
+    and language bindings. The C library can be scanned at compile time and 
+    generate metadata files, in addition to the actual native C library. 
+    Then language bindings can read this metadata and automatically provide 
+    bindings to call into the C library.
+  dev_url: https://gitlab.gnome.org/GNOME/gobject-introspection
+  doc_url: https://gitlab.gnome.org/GNOME/gobject-introspection
 
 extra:
+  feedstock-name: {{ name|lower }}
   recipe-maintainers:
     - pkgw
     - ocefpaf
+    - ryanvolz
     - scopatz
     - tschoonj
-  skip-lints:
-    - cbc_dep_in_run_missing_from_host
-    - missing_imports_or_run_test_py
-    - python_build_tool_in_run

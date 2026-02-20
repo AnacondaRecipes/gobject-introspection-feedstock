@@ -11,3 +11,4 @@ index 6c0674a1..971f53d4 100644
              compiler = CCompiler()
              self.assertEqual(compiler.compiler.linker_so[0], "foobar")
  
+

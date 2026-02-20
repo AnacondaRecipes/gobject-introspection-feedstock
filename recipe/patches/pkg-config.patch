@@ -16,3 +16,4 @@ index 39db41d..0a925f6 100644
 +        return list(filter(lambda lib: lib != 'm.lib', shlex.split(out)))
      return shlex.split(out)
  
+ 

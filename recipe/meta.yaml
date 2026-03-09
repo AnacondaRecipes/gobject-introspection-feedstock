@@ -46,7 +46,7 @@ requirements:
     - cairo {{ cairo }}
     - glib {{ glib_compatible_pin }}
     - libffi {{ libffi }}
-    - pthread-stubs 0.3
+    - pthread-stubs 0.4
     - zlib {{ zlib }}  # [win]
     - packaging
     # ../meson.build:29:8: ERROR: $PREFIX/bin/python is missing modules: setuptools

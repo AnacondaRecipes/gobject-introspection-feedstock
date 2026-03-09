@@ -8,8 +8,8 @@ set CFLAGS=%CFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
 set CXXFLAGS=%CXXFLAGS% -DGI_SCANNER_DISABLE_CACHE=1 -DHAVE_CONFIG_H
 
 :: set pkg-config path so that host deps can be found
-set PKG_CONFIG_PATH="%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
-set SEARCH_PATH="%BUILD_PREFIX%\Library\"
+set "PKG_CONFIG_PATH=%LIBRARY_LIB%\pkgconfig;%LIBRARY_PREFIX%\share\pkgconfig;%BUILD_PREFIX%\Library\lib\pkgconfig"
+set "SEARCH_PATH=%BUILD_PREFIX%\Library"
 
 :: meson options
 :: (set pkg_config_path so deps in host env can be found)

@@ -3,9 +3,7 @@ upstream_sources:
   - github:
       identifier: GNOME/gobject-introspection
       use_max_tag: true
-      exclude_regex: (?i)^(?=.*(?:(?<=\d)rc\d*|(?<=\d)dev\d+|(?:^|[-._])(?:alpha|beta|gamma|pre|preview)(?:\d+)?|[-._]rc\d+|(?:^|[-._])dev\d+|(?:\d+\.)+\d+[ab]\d*)).+$
-      from_pattern: ^v?(\d+(?:\.\d+)*.*)$
-      to_pattern: \1
+      include_regex: ^\d+\.\d*[02468]\.\d+$
     packages:
       - g-ir-build-tools
       - g-ir-host-tools

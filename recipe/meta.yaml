@@ -27,8 +27,8 @@ requirements:
     - python
     - {{ posix }}bison
     - {{ posix }}flex
-    - meson >=1.4.0
-    - ninja
+    - meson >=1.4.0  # analint: python_build_tools_in_host
+    - ninja-base
     - pkg-config
     - {{ compiler('c') }}
     - {{ stdlib('c') }}
@@ -52,7 +52,7 @@ requirements:
     - packaging
     - python
     - setuptools  # [py>311]
-    - xorg-xorgproto
+    - xorg-xorgproto 2024
     - zlib {{ zlib }}
 
 outputs:

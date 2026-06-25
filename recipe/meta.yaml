@@ -219,9 +219,12 @@ outputs:
       requires:
         - pkg-config
       commands:
-        # pkg-config presence & version
-        - pkg-config --exists gobject-introspection-1.0
-        - pkg-config --modversion gobject-introspection-1.0
+        # --exists validates Requires: deps; on Windows pkg-config often cannot
+        # resolve the full chain even when the .pc file and tool paths are fine.
+        - pkg-config --exists gobject-introspection-1.0  # [unix]
+        - pkg-config --modversion gobject-introspection-1.0  # [unix]
+        - if not exist %PREFIX%\Library\lib\pkgconfig\gobject-introspection-1.0.pc exit 1  # [win]
+        - if not exist %PREFIX%\Library\lib\pkgconfig\gobject-introspection-no-export-1.0.pc exit 1  # [win]
 
         # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
         - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]

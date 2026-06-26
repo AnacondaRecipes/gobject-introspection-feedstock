@@ -11,11 +11,8 @@ echo none /tmp usertemp binary,posix=0 0 0 >>%BUILD_PREFIX%\Library\etc\fstab
 mkdir forgebuild
 cd forgebuild
 
-@REM g-ir-scanner caches under ~/.cache/g-ir-scanner by default. Keep that out of
-@REM the user profile so build/tests stay hermetic and avoid PermissionError when
-@REM the profile cache is locked or not writable (see cachestore.py).
-set "XDG_CACHE_HOME=%CD%\.cache"
-if not exist "%XDG_CACHE_HOME%" mkdir "%XDG_CACHE_HOME%"
+@REM g-ir-scanner caches under ~/.cache/g-ir-scanner by default.
+set GI_SCANNER_DISABLE_CACHE=1
 
 @REM pkg-config setup
 FOR /F "delims=" %%i IN ('cygpath.exe -m "%LIBRARY_PREFIX%"') DO set "LIBRARY_PREFIX_M=%%i"

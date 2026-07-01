@@ -219,9 +219,9 @@ outputs:
       requires:
         - pkg-config
       commands:
-        # pkg-config presence & version (Requires: glib-2.0 is only in libglib on unix)
-        - pkg-config --exists gobject-introspection-1.0  # [unix]
-        - pkg-config --modversion gobject-introspection-1.0  # [unix]
+        # pkg-config presence & version
+        - pkg-config --exists gobject-introspection-1.0
+        - pkg-config --modversion gobject-introspection-1.0
 
         # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
         - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]

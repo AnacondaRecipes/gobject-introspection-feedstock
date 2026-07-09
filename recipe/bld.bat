@@ -11,6 +11,9 @@ echo none /tmp usertemp binary,posix=0 0 0 >>%BUILD_PREFIX%\Library\etc\fstab
 mkdir forgebuild
 cd forgebuild
 
+@REM g-ir-scanner caches under ~/.cache/g-ir-scanner by default.
+set GI_SCANNER_DISABLE_CACHE=1
+
 @REM pkg-config setup
 FOR /F "delims=" %%i IN ('cygpath.exe -m "%LIBRARY_PREFIX%"') DO set "LIBRARY_PREFIX_M=%%i"
 set PKG_CONFIG_PATH=%LIBRARY_PREFIX_M%/lib/pkgconfig;%LIBRARY_PREFIX_M%/share/pkgconfig
